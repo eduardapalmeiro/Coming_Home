@@ -34,9 +34,11 @@ ASSETS = {
     "background": "fundo001.png",                         # imagem de fundo
     "player": "alien001.png",                                    # imagem da nave
     "player2": "alienamigo001.png",                                    # imagem da nave 2
-    "meteor": "meteor002.png",                                 # imagem do meteoro
+    "meteor": "meteoro001.png",                                 # imagem do meteoro
+    "meteor2": "meteoro002.png",
+    "meteor3": "meteoro003.png",
     "sound_point": "classic-game-action-positive-5-224402.mp3", # som ao desviar com sucesso
-    "sound_hit": "explosaouau.mp3",                # som de colisão
+    "sound_hit": "barrulho",                # som de colisão
     "music": "Monkeys_Spinning_Monkeys.mp3"          # música de fundo. direitos: Music by Maksym Malko from Pixabay
 }
 
@@ -68,7 +70,21 @@ def load_image(filename, fallback_color, size=None):
 background = load_image(ASSETS["background"], WHITE, (WIDTH, HEIGHT))
 player_img = load_image(ASSETS["player"], BLUE, (64, 64))
 player2_img = load_image(ASSETS["player2"], BLUE, (64, 64))
-meteor_img = load_image(ASSETS["meteor"], RED, (40, 40))
+#meteor_img = load_image(ASSETS["meteor"], RED, (40, 40))
+
+# Carregar frames
+frames = [
+    pygame.image.load("meteoro001.png").convert_alpha(),
+    pygame.image.load("meteoro002.png").convert_alpha(),
+    pygame.image.load("meteoro003.png").convert_alpha(),
+]
+
+frames = [pygame.transform.scale(frame, (40, 40)) for frame in frames]
+
+frame_index = 0
+velocidade_animacao = 0.2
+
+
 
 # Sons
 def load_sound(filename):
@@ -117,6 +133,16 @@ running = True
 while running:
     clock.tick(FPS)
     screen.blit(background, (0, 0))
+
+    # --- Animações ---
+
+    # Atualizar índice da animação
+    frame_index += velocidade_animacao
+    if frame_index >= len(frames):
+        frame_index = 0
+
+    # Escolher frame atual
+    frame_atual = frames[int(frame_index)]
 
     # --- Eventos ---
     for event in pygame.event.get():
@@ -192,7 +218,8 @@ while running:
     else:
         death2 = True
     for meteor in meteor_list:
-        screen.blit(meteor_img, meteor)
+
+        screen.blit(frame_atual, meteor)
 
     # --- Exibe pontuação e vidas ---
     text = font.render(f"Pontos: {score}   Vidas: {lives}", True, WHITE)
