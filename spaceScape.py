@@ -126,6 +126,7 @@ lives2 = 3
 font = pygame.font.Font(None, 36)
 clock = pygame.time.Clock()
 running = True
+frame_index = 0
 
 # ----------------------------------------------------------
 # 🕹️ LOOP PRINCIPAL
@@ -133,13 +134,6 @@ running = True
 while running:
     clock.tick(FPS)
     screen.blit(background, (0, 0))
-
-    # --- Animações ---
-
-    # Atualizar índice da animação
-    frame_index += velocidade_animacao
-    if frame_index >= len(frames):
-        frame_index = 0
 
     # Escolher frame atual
     frame_atual = frames[int(frame_index)]
@@ -208,6 +202,7 @@ while running:
         if lives2 <= 0 and lives <= 0:
             running = False
 
+
     # --- Desenha tudo ---
     if lives > 0:
         screen.blit(player_img, player_rect)
@@ -228,6 +223,13 @@ while running:
     screen.blit(text, (20, 20))
 
     pygame.display.flip()
+
+    # --- Animações ---
+
+    # Atualizar índice da animação
+    frame_index += 1  # velocidade_animacao
+    if frame_index >= len(frames):
+        frame_index = 0
 
 # ----------------------------------------------------------
 # 🏁 TELA DE FIM DE JOGO
