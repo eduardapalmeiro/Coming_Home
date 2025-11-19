@@ -1,11 +1,8 @@
 ##############################################################
-###               S P A C E     E S C A P E                ###
+###               C O M I N G       H O M E                ###
 ##############################################################
-###                  versao Alpha 0.3                      ###
-##############################################################
-### Objetivo: desviar dos meteoros que caem.               ###
-### Cada colisão tira uma vida. Sobreviva o máximo que     ###
-### conseguir!                                             ###
+### Objetivo: Levar o alien até sua casa e sobreviver      ###
+### aos obstaculos.                                        ###
 ##############################################################
 ### Prof. Filipo Novo Mor - github.com/ProfessorFilipo     ###
 ##############################################################
@@ -22,16 +19,18 @@ pygame.init()
 # ----------------------------------------------------------
 WIDTH, HEIGHT = 800, 600
 FPS = 60
-pygame.display.set_caption("🚀 Space Escape")
+pygame.display.set_caption("👽 Coming home 👽")
 
 # ----------------------------------------------------------
-# 🧩 SEÇÃO DE ASSETS (os alunos podem trocar os arquivos aqui)
+# 🧩 SEÇÃO DE ASSETS
 # ----------------------------------------------------------
-# Dica: coloque as imagens e sons na mesma pasta do arquivo .py
-# e troque apenas os nomes abaixo.
+# Colocar as imagens e sons na mesma pasta do arquivo .py
+# e trocar apenas os nomes abaixo.
 
 ASSETS = {
     "background": "fundo001.png",                         # imagem de fundo
+    "background2": "fundo002.png",                         # imagem de fundo 2
+    "background3": "fundo003.png",                         # imagem de fundo 3
     "player": "alien001.png",                                    # imagem da nave
     "player2": "alienamigo001.png",                                    # imagem da nave 2
     "meteor": "meteoro001.png",                                 # imagem do meteoro
@@ -68,6 +67,8 @@ def load_image(filename, fallback_color, size=None):
 
 # Carrega imagens
 background = load_image(ASSETS["background"], WHITE, (WIDTH, HEIGHT))
+background2 = load_image(ASSETS["background2"], WHITE, (WIDTH, HEIGHT))
+background3 = load_image(ASSETS["background3"], WHITE, (WIDTH, HEIGHT))
 player_img = load_image(ASSETS["player"], BLUE, (64, 64))
 player2_img = load_image(ASSETS["player2"], BLUE, (64, 64))
 #meteor_img = load_image(ASSETS["meteor"], RED, (40, 40))
@@ -128,12 +129,96 @@ clock = pygame.time.Clock()
 running = True
 frame_index = 0
 
+# --- Fim de jogo ---
+
+def win():
+    pygame.mixer.music.stop()
+    screen.fill((20, 20, 20))
+    end_text = font.render("Fim de jogo! Pressione qualquer tecla para sair.", True, WHITE)
+    final_score = font.render(f"Pontuação final: {score}", True, WHITE)
+    screen.blit(end_text, (150, 260))
+    screen.blit(final_score, (300, 300))
+    pygame.display.flip()
+
+# --- Animação troca de fases ---
+
+# --- Fase 1 ---
+def fase1():
+    screen.blit(background, (0, 0))
+
+    # --- Desenha tudo ---
+    if lives > 0:
+        screen.blit(player_img, player_rect)
+    else:
+        death = True
+    if lives2 > 0:
+        screen.blit(player2_img, player2_rect)
+    else:
+        death2 = True
+    for meteor in meteor_list:
+        screen.blit(frame_atual, meteor)
+
+    # --- Exibe pontuação e vidas ---
+    text = font.render(f"Pontos: {score}   Vidas: {lives}", True, WHITE)
+    screen.blit(text, (10, 10))
+    text = font.render(f"Pontos2: {score2}   Vidas2: {lives2}", True, WHITE)
+    screen.blit(text, (20, 20))
+
+    pygame.display.flip()
+
+# --- Fase 2 ---
+def fase2():
+    screen.blit(background2, (0, 0))
+    screen.blit(font.render(f"Fase 2", True, WHITE), (300, 300))
+    # --- Desenha tudo ---
+    if lives > 0:
+        screen.blit(player_img, player_rect)
+    else:
+        death = True
+    if lives2 > 0:
+        screen.blit(player2_img, player2_rect)
+    else:
+        death2 = True
+    for meteor in meteor_list:
+        screen.blit(frame_atual, meteor)
+
+    # --- Exibe pontuação e vidas ---
+    text = font.render(f"Pontos: {score}   Vidas: {lives}", True, WHITE)
+    screen.blit(text, (10, 10))
+    text = font.render(f"Pontos2: {score2}   Vidas2: {lives2}", True, WHITE)
+    screen.blit(text, (20, 20))
+
+    pygame.display.flip()
+
+# --- Fase 3 ---
+def fase3():
+    screen.blit(background3, (0, 0))
+
+    # --- Desenha tudo ---
+    if lives > 0:
+        screen.blit(player_img, player_rect)
+    else:
+        death = True
+    if lives2 > 0:
+        screen.blit(player2_img, player2_rect)
+    else:
+        death2 = True
+    for meteor in meteor_list:
+        screen.blit(frame_atual, meteor)
+
+    # --- Exibe pontuação e vidas ---
+    text = font.render(f"Pontos: {score}   Vidas: {lives}", True, WHITE)
+    screen.blit(text, (10, 10))
+    text = font.render(f"Pontos2: {score2}   Vidas2: {lives2}", True, WHITE)
+    screen.blit(text, (20, 20))
+
+    pygame.display.flip()
+
 # ----------------------------------------------------------
 # 🕹️ LOOP PRINCIPAL
 # ----------------------------------------------------------
 while running:
     clock.tick(FPS)
-    screen.blit(background, (0, 0))
 
     # Escolher frame atual
     frame_atual = frames[int(frame_index)]
@@ -198,49 +283,20 @@ while running:
                 if sound_hit:
                     sound_hit.play()
 
+
         # Fim de jogo
         if lives2 <= 0 and lives <= 0:
             running = False
 
+    # --- Fases ---
+    if (score >= 10 or score2 >= 10) and (score <= 19 or score <= 19):
+        fase2()
+    elif (score >= 20 or score2 >= 20) and (score <= 29 or score <= 29):
+        fase3()
+    elif (score >= 30 or score2 >= 30):
+        win
+    else: fase1()
 
-    # --- Desenha tudo ---
-    if lives > 0:
-        screen.blit(player_img, player_rect)
-    else:
-        death = True
-    if lives2 > 0:
-        screen.blit(player2_img, player2_rect)
-    else:
-        death2 = True
-    for meteor in meteor_list:
-
-        screen.blit(frame_atual, meteor)
-
-    # --- Exibe pontuação e vidas ---
-    text = font.render(f"Pontos: {score}   Vidas: {lives}", True, WHITE)
-    screen.blit(text, (10, 10))
-    text = font.render(f"Pontos2: {score2}   Vidas2: {lives2}", True, WHITE)
-    screen.blit(text, (20, 20))
-
-    pygame.display.flip()
-
-    # --- Animações ---
-
-    # Atualizar índice da animação
-    frame_index += 1  # velocidade_animacao
-    if frame_index >= len(frames):
-        frame_index = 0
-
-# ----------------------------------------------------------
-# 🏁 TELA DE FIM DE JOGO
-# ----------------------------------------------------------
-pygame.mixer.music.stop()
-screen.fill((20, 20, 20))
-end_text = font.render("Fim de jogo! Pressione qualquer tecla para sair.", True, WHITE)
-final_score = font.render(f"Pontuação final: {score}", True, WHITE)
-screen.blit(end_text, (150, 260))
-screen.blit(final_score, (300, 300))
-pygame.display.flip()
 
 waiting = True
 while waiting:
