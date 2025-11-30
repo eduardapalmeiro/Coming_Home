@@ -4,8 +4,6 @@
 ### Objetivo: Levar o alien até sua casa e sobreviver      ###
 ### aos obstaculos.                                        ###
 ##############################################################
-### Refatorado: OOP + Assets Reais para Meteoros Rosas     ###
-##############################################################
 
 import pygame
 import random
@@ -81,7 +79,7 @@ def load_sound(filename):
     return None
 
 
-# --- Carregamento Imagens Estáticas ---
+# --- Carregamento Imagens ---
 background = load_image(ASSETS["background"], WHITE, (WIDTH, HEIGHT))
 background2 = load_image(ASSETS["background2"], WHITE, (WIDTH, HEIGHT))
 background3 = load_image(ASSETS["background3"], WHITE, (WIDTH, HEIGHT))
@@ -128,7 +126,7 @@ if os.path.exists(ASSETS["music"]):
 
 
 # ----------------------------------------------------------
-# 🏛️ CLASSES
+# CLASSES
 # ----------------------------------------------------------
 
 class Meteor(pygame.sprite.Sprite):
@@ -229,7 +227,7 @@ meteor_group = pygame.sprite.Group()
 life_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 
-# Cria Meteoros passando AMBOS os tipos de frames
+
 for _ in range(6):
     meteor_group.add(Meteor(meteor_frames_normal, meteor_frames_pink))
 
@@ -250,7 +248,7 @@ running = True
 
 
 # ----------------------------------------------------------
-# FUNÇÕES AUXILIARES
+# FUNÇÕES
 # ----------------------------------------------------------
 def reproduzir_video(caminho_video):
     if not os.path.exists(caminho_video): return
